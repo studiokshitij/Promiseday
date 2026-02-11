@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title> I Promise To Choose You Every Single Day. ❤️</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL RESET & CORE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+            /* Prevent vertical scroll */
+            height: 100vh;
+            width: 100vw;
+            touch-action: pan-y;
+            /* Optimize for touch */
+        }
+
+        /* --- MUSIC BUTTON --- */
+        #music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
+        }
+
+        #music-btn.playing {
+            animation: pulse-music 1.5s infinite;
+            background: rgba(255, 0, 85, 0.8);
+            border-color: #ff0055;
+        }
+
+        @keyframes pulse-music {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 0, 85, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 85, 0);
+            }
+        }
+
+        /* --- NAVIGATION ARROWS (Desktop) --- */
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 999;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            transition: 0.3s;
+            display: none;
+            /* Hidden on mobile by default, shown via media query */
+        }
+
+        .nav-arrow:hover {
+            background: rgba(255, 0, 85, 0.8);
+        }
+
+        .prev {
+            left: 20px;
+        }
+
+        .next {
+            right: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .nav-arrow {
+                display: block;
+            }
+        }
+
+        /* --- SLIDER CONTAINER --- */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- SLIDE STYLES --- */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease-in-out, visibility 1s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* --- OVERLAY FOR READABILITY --- */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* Base darken */
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        /* --- IMAGES IN SLIDES --- */
+        .slide-img {
+            width: 100%;
+            max-width: 350px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 25px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            /* Hidden initially for animation */
+        }
+
+        /* --- TEXT STYLES --- */
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #ffbad2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+        }
+
+        p.promise-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #f1f1f1;
+            margin-bottom: 30px;
+            font-weight: 300;
+            opacity: 0;
+        }
+
+        /* --- ANIMATIONS PER SLIDE --- */
+
+        /* Slide 1: Entry */
+        #slide-1 {
+            background: radial-gradient(circle at center, #2b1055, #000);
+        }
+
+        #slide-1 .firefly {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffeb3b;
+            animation: fly 10s infinite linear;
+            z-index: 1;
+        }
+
+        /* Slide Styles & Gradients */
+        #slide-2 {
+            background: linear-gradient(135deg, #1c1c1c 0%, #4a192c 100%);
+        }
+
+        #slide-3 {
+            background: linear-gradient(to bottom, #200122, #6f0000);
+        }
+
+        #slide-4 {
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+        }
+
+        #slide-5 {
+            background: radial-gradient(circle, #5d4157 0%, #a8caba 100%);
+        }
+
+        /* Soft contrast */
+        #slide-6 {
+            background: linear-gradient(45deg, #111 0%, #333 100%);
+        }
+
+        /* B&W vibe */
+        #slide-7 {
+            background: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+        }
+
+        #slide-8 {
+            background: radial-gradient(circle, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+        }
+
+        /* Bright finale */
+        #slide-9 {
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* Generic Rose Animation Class */
+        .rose-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 15px;
+            opacity: 0;
+        }
+
+        /* Active Slide Animation Triggers */
+        .active .slide-img {
+            animation: zoomIn 1s forwards 0.3s;
+        }
+
+        .active h2 {
+            animation: slideUp 1s forwards 0.5s;
+        }
+
+        .active .promise-text {
+            animation: fadeIn 1.5s forwards 0.8s;
+        }
+
+        .active .rose-icon {
+            animation: bloom 1s forwards 0.1s;
+        }
+
+        /* Unique Interactions per Slide */
+        #slide-2.active .slide-img {
+            animation: slideRight 1s forwards 0.3s;
+        }
+
+        #slide-4.active .slide-img {
+            animation: rotateIn 1s forwards 0.3s;
+        }
+
+        #slide-6.active .slide-img {
+            filter: grayscale(100%);
+            animation: toColor 3s forwards 1s, zoomIn 1s forwards 0.3s;
+        }
+
+        /* --- BUTTONS --- */
+        .action-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            opacity: 0;
+            /* Hidden until anim */
+        }
+
+        .active .action-btn {
+            animation: bounceIn 0.8s forwards 1.2s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* --- FINALE --- */
+        .heart-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .finale-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #ff0055;
+            margin-bottom: 20px;
+        }
+
+        /* --- KEYFRAMES --- */
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                transform: rotate(-10deg) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: rotate(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bloom {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            70% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes toColor {
+            from {
+                filter: grayscale(100%);
+            }
+
+            to {
+                filter: grayscale(0%);
+            }
+        }
+
+        @keyframes fly {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(100px, -150px);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 2rem;
+            }
+
+            .slide-img {
+                height: 200px;
+                max-width: 90%;
+            }
+
+            p.promise-text {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="music-btn" title="Play Music">🎵</button>
+    <audio id="bg-music" loop>
+        <source
+            src="https://cdn.pixabay.com/download/audio/2022/10/05/audio_686134709d.mp3?filename=romantic-piano-122971.mp3"
+            type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <button class="nav-arrow prev" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="nav-arrow next" onclick="changeSlide(1)">&#10095;</button>
+
+    <div class="slider-container" id="slider">
+
+        <div class="slide active" id="slide-1">
+            <div class="overlay"></div>
+            <div class="content">
+                <div class="rose-icon">🌙</div>
+                <h2>Promise Day</h2>
+                <p class="promise-text">
+                    “Promise Day par…<br>
+                    main sirf words nahi,<br>
+                    apna dil rakh raha hoon.”
+                </p>
+                <button class="action-btn" onclick="nextSlide()">Start Our Story 🌹</button>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-2">
+            <div class="overlay"></div>
+            <div class="content">
+                <span class="rose-icon">🛡️</span>
+                <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=600&auto=format&fit=crop"
+                    alt="Couple Hugging" class="slide-img">
+                <h2>The Shield</h2>
+                <p class="promise-text">
+                    “Main wada karta hoon ki chahe duniya kuch bhi bole,<br>
+                    main hamesha tumhare side rahunga.”
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-3">
+            <div class="overlay"></div>
+            <div class="content">
+                <span class="rose-icon">🕯️</span>
+                <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=600&auto=format&fit=crop"
+                    alt="Comfort" class="slide-img">
+                <h2>Understanding</h2>
+                <p class="promise-text">
+                    “Jab tum thak jao, ro jao, ya chup ho jao,<br>
+                    main bina bole tumhe samajhne ki koshish karunga.”
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-4">
+            <div class="overlay"></div>
+            <div class="content">
+                <span class="rose-icon">📈</span>
+                <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=600&auto=format&fit=crop"
+                    alt="Growth" class="slide-img">
+                <h2>Every Day</h2>
+                <p class="promise-text">
+                    “Perfect main nahi hoon,<br>
+                    par tumse pyaar har din aur zyada karunga.”
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-5">
+            <div class="overlay"></div>
+            <div class="content">
+                <span class="rose-icon">✨</span>
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop"
+                    alt="Smile" class="slide-img">
+                <h2>Your Smile</h2>
+                <p class="promise-text">
+                    “Tumhari smile meri sabse badi taqat hai,<br>
+                    main ise kabhi tootne nahi dunga.”
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-6">
+            <div class="overlay"></div>
+            <div class="content">
+                <span class="rose-icon">🤝</span>
+                <img src="https://images.unsplash.com/photo-1532224589403-0e70ee166b49?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8SG9sZGluZyUyMGhhbmR8ZW58MHx8MHx8fDA%3D"
+                    alt="Holding Hands" class="slide-img">
+                <h2>Holding On</h2>
+                <p class="promise-text">
+                    “Bure din ho ya ache,<br>
+                    tumhara haath main kabhi chhodunga nahi.”
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-7">
+            <div class="overlay"></div>
+            <div class="content">
+                <span class="rose-icon">🌏</span>
+                <img src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?q=80&w=600&auto=format&fit=crop"
+                    alt="World" class="slide-img">
+                <h2>My World</h2>
+                <p class="promise-text">
+                    “Tum sirf meri wife nahi ho,<br>
+                    tum meri aadat, meri dua, meri duniya ho.”
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-8">
+            <div class="overlay"></div>
+            <div class="content">
+                <span class="rose-icon">💍</span>
+                <img src="https://images.unsplash.com/photo-1598443879538-e75c14e067fc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fEhvbGRpbmclMjBoYW5kfGVufDB8fDB8fHww"
+                    alt="Forever" class="slide-img">
+                <h2>The Final Vow</h2>
+                <p class="promise-text">
+                    “Aakhri wada —<br>
+                    main tumse sirf pyaar nahi,<br>
+                    main tumhara hamesha ke liye hoon.”
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-9">
+            <div class="overlay" style="background: rgba(0,0,0,0.8)"></div>
+            <div class="heart-container" id="heart-container"></div>
+            <div class="content">
+                <h2 class="finale-text">Meri Jaan...</h2>
+                <p class="promise-text" id="typewriter-text"></p>
+                <button class="action-btn" onclick="celebrateLove()">I Love You Forever ❤️</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- LOGIC START ---
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const musicBtn = document.getElementById('music-btn');
+        const bgMusic = document.getElementById('bg-music');
+
+        // --- MUSIC SYSTEM ---
+        let isPlaying = false;
+
+        musicBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.classList.remove('playing');
+                musicBtn.innerHTML = "🎵";
+                isPlaying = false;
+            } else {
+                bgMusic.play().then(() => {
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = "⏸";
+                    isPlaying = true;
+                }).catch(e => {
+                    alert("Please interact with the page first to play music!");
+                });
+            }
+        });
+
+        // --- NAVIGATION SYSTEM ---
+        function showSlide(index) {
+            // Remove active class from all
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Handle Index Wrap
+            if (index >= totalSlides) index = 0;
+            if (index < 0) index = totalSlides - 1;
+
+            currentSlide = index;
+
+            // Add active class to new slide
+            const newSlide = slides[currentSlide];
+            newSlide.classList.add('active');
+
+            // Trigger Typewriter if it's the last slide
+            if (newSlide.id === 'slide-9') {
+                startTypewriter();
+                createHearts();
+            }
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function changeSlide(n) {
+            showSlide(currentSlide + n);
+        }
+
+        // --- SWIPE SUPPORT (MOBILE) ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextSlide(); // Swipe Left
+            if (touchEndX > touchStartX + 50) changeSlide(-1); // Swipe Right
+        }
+
+        // --- KEYBOARD SUPPORT ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        // --- VISUAL EFFECTS ---
+
+        // 1. Fireflies for Slide 1
+        function createFireflies() {
+            const container = document.getElementById('slide-1');
+            for (let i = 0; i < 20; i++) {
+                let div = document.createElement('div');
+                div.classList.add('firefly');
+                div.style.left = Math.random() * 100 + 'vw';
+                div.style.top = Math.random() * 100 + 'vh';
+                div.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                container.appendChild(div);
+            }
+        }
+        createFireflies();
+
+        // 2. Typewriter Effect for Finale
+        function startTypewriter() {
+            const text = "Tum meri zindagi ka\n sabse khoobsurat wada ho ❤️";
+            const element = document.getElementById('typewriter-text');
+            element.innerHTML = "";
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    if (text.charAt(i) === '\n') {
+                        element.innerHTML += '<br>';
+                    } else {
+                        element.innerHTML += text.charAt(i);
+                    }
+                    i++;
+                    setTimeout(type, 100);
+                }
+            }
+            type();
+        }
+
+        // 3. Heart Explosion for Finale
+        function createHearts() {
+            const container = document.getElementById('heart-container');
+            setInterval(() => {
+                if (!document.getElementById('slide-9').classList.contains('active')) return;
+
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'absolute';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '100%';
+                heart.style.fontSize = Math.random() * 20 + 20 + 'px';
+                heart.style.transition = 'all 3s ease-out';
+                heart.style.opacity = '0.8';
+
+                container.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.style.top = '-10%';
+                    heart.style.opacity = '0';
+                }, 100);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 3100);
+            }, 300);
+        }
+
+        // 4. Final Button Interaction
+        function celebrateLove() {
+            // Create a custom modal/alert style directly in JS
+            const msg = document.createElement('div');
+            msg.style.position = 'fixed';
+            msg.style.top = '50%';
+            msg.style.left = '50%';
+            msg.style.transform = 'translate(-50%, -50%)';
+            msg.style.background = '#fff';
+            msg.style.color = '#d32f2f';
+            msg.style.padding = '30px';
+            msg.style.borderRadius = '20px';
+            msg.style.boxShadow = '0 0 50px rgba(255,0,0,0.5)';
+            msg.style.zIndex = '2000';
+            msg.style.textAlign = 'center';
+            msg.style.fontFamily = "'Dancing Script', cursive";
+            msg.style.fontSize = '2rem';
+            msg.innerHTML = "Happy Promise Day, My Love! <br>Forever Yours. 🌹";
+
+            document.body.appendChild(msg);
+
+            // Confetti effect
+            for (let i = 0; i < 100; i++) {
+                let conf = document.createElement('div');
+                conf.style.position = 'fixed';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = '-10px';
+                conf.style.width = '10px';
+                conf.style.height = '10px';
+                conf.style.backgroundColor = ['#ff0', '#f00', '#0f0', '#00f'][Math.floor(Math.random() * 4)];
+                conf.style.transition = 'top 2s linear';
+                conf.style.zIndex = '1999';
+                document.body.appendChild(conf);
+
+                setTimeout(() => {
+                    conf.style.top = '100vh';
+                }, 100);
+            }
+        }
+    </script>
+</body>
+
+</html>
